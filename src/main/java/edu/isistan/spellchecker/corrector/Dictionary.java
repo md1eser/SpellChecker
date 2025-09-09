@@ -1,6 +1,11 @@
 package edu.isistan.spellchecker.corrector;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashSet;
+import java.util.Set;
 
 import edu.isistan.spellchecker.tokenizer.TokenScanner;
 
@@ -12,6 +17,8 @@ import edu.isistan.spellchecker.tokenizer.TokenScanner;
  * o apostrofes.
  */
 public class Dictionary {
+
+	private final Set<String> words = new HashSet<>();
 
 	/**
 	 * Construye un diccionario usando un TokenScanner
@@ -26,7 +33,17 @@ public class Dictionary {
 	 * @throws IllegalArgumentException el TokenScanner es null
 	 */
 	public Dictionary(TokenScanner ts) throws IOException {
-
+		if(ts==null) throw new IllegalArgumentException("TokenScanner no puede ser null");
+		// Consumir todos los tokens del TokenScanner y guardar solo las palabras válidas, en minúsculas porque debe ser case-insensitive
+        while (ts.hasNext()) {
+            String tok = ts.next();
+            if (TokenScanner.isWord(tok)) { // TokenScanner.isWord() ya descarta null/empty y tokens con chars inválidos
+                String lower = tok.toLowerCase();
+                if (!lower.isEmpty()) {
+                    words.add(lower);
+                }
+            }
+        }
 	}
 
 	/**
@@ -52,7 +69,7 @@ public class Dictionary {
 	 * @return número de palabras únicas
 	 */
 	public int getNumWords() {
-		return -1;
+		return words.size();
 	}
 
 	/**
@@ -68,6 +85,10 @@ public class Dictionary {
 	 * @return si la palabra está en el diccionario.
 	 */
 	public boolean isWord(String word) {
-		return false;
+		if (word == null) 
+			return false;
+        if (!TokenScanner.isWord(word)) 
+			return false;
+        return words.contains(word.toLowerCase());
 	}
 }
