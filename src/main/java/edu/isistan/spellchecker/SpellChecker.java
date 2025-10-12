@@ -20,7 +20,7 @@ import edu.isistan.spellchecker.corrector.Dictionary;
  * <p>
  * Nota:
  * <ul>
- * <li> La implementaciÛn provista provee mÈtodos utiles para implementar el SpellChecker.
+ * <li> La implementaci√≥n provista provee m√©todos utiles para implementar el SpellChecker.
  * <li> Toda la salida al usuario deben enviarse a System.out (salida estandar)
  * </ul>
  * <p>
@@ -43,8 +43,8 @@ public class SpellChecker {
 	}
 
 	/**
-	 * Returna un entero desde el Scanner provisto. El entero estar· en el rango [min, max].
-	 * Si no se ingresa un entero o este est· fuera de rango, repreguntar·.
+	 * Returna un entero desde el Scanner provisto. El entero estar√° en el rango [min, max].
+	 * Si no se ingresa un entero o este est√° fuera de rango, repreguntar√°.
 	 *
 	 * @param min
 	 * @param max
@@ -85,7 +85,7 @@ public class SpellChecker {
 	 * @param in stream donde se encuentra el documento de entrada.
 	 * @param input entrada interactiva del usuario. Por ejemplo, entrada estandar System.in
 	 * @param out stream donde se escribe el documento de salida.
-	 * @throws IOException si se produce alg˙n error leyendo el documento.
+	 * @throws IOException si se produce alg√∫n error leyendo el documento.
 	 */
 	public void checkDocument(Reader in, InputStream input, Writer out) throws IOException {
 		Scanner sc = new Scanner(input);

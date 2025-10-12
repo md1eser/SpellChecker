@@ -7,7 +7,7 @@ import edu.isistan.spellchecker.corrector.Dictionary;
 /**
  * Este corrector sugiere correciones cuando dos letras adyacentes han sido cambiadas.
  * <p>
- * Un error com˙n es cambiar las letras de orden, e.g.
+ * Un error com√∫n es cambiar las letras de orden, e.g.
  * "with" -> "wiht". Este corrector intenta dectectar palabras con exactamente un swap.
  * <p>
  * Por ejemplo, si la palabra mal escrita es "haet", se debe sugerir
@@ -31,7 +31,7 @@ public class SwapCorrector extends Corrector {
 	 * 
 	 * Este corrector sugiere correciones cuando dos letras adyacentes han sido cambiadas.
 	 * <p>
-	 * Un error com˙n es cambiar las letras de orden, e.g.
+	 * Un error com√∫n es cambiar las letras de orden, e.g.
 	 * "with" -> "wiht". Este corrector intenta dectectar palabras con exactamente un swap.
 	 * <p>
 	 * Por ejemplo, si la palabra mal escrita es "haet", se debe sugerir
@@ -42,8 +42,8 @@ public class SwapCorrector extends Corrector {
 	 * Ver superclase.
 	 *
 	 * @param wrong 
-	 * @return retorna un conjunto (potencialmente vacÌo) de sugerencias.
-	 * @throws IllegalArgumentException si la entrada no es una palabra v·lida 
+	 * @return retorna un conjunto (potencialmente vac√≠o) de sugerencias.
+	 * @throws IllegalArgumentException si la entrada no es una palabra v√°lida 
 	 */
 	public Set<String> getCorrections(String wrong) {
 		return null;
