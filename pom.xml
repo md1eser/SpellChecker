@@ -9,7 +9,8 @@
   <name>Proyecto base del spellchecker</name>
 
   <properties>
-    <maven.compiler.release>8</maven.compiler.release>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -29,9 +30,10 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <release>8</release>
+          <source>1.8</source>
+          <target>1.8</target>
           <encoding>UTF-8</encoding>
-        </configuration>
+      </configuration>
       </plugin>
     </plugins>
   </build>
