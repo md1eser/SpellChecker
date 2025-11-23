@@ -1,16 +1,25 @@
 package edu.isistan.spellchecker.corrector.impl;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import edu.isistan.spellchecker.corrector.Corrector;
-
-import java.io.*;
 
 /**
  * Corrector basado en un archivo.
  * 
  */
 public class FileCorrector extends Corrector {
+
+	private final Map<String, Set<String>> dictionary;
 
 	/** Clase especial que se utiliza al tener 
 	 * algún error de formato en el archivo de entrada.
@@ -78,7 +87,41 @@ public class FileCorrector extends Corrector {
 	 * @throws IllegalArgumentException reader es null
 	 */
 	public FileCorrector(Reader r) throws IOException, FormatException {
+		if (r == null) {
+			throw new IllegalArgumentException("Reader no puede ser null");
+		}
+		
+		dictionary = new HashMap<>();
 
+		BufferedReader br = new BufferedReader(r);
+
+		String line;
+		while ((line = br.readLine()) != null) {
+			if (line.trim().isEmpty()) {
+				continue; 
+			}
+
+			// El -1 en split sirve para detectar casos como "wrong,correct,"
+			String[] parts = line.split(",", -1);
+
+			// Formato inválido si no están las 2 partes wrong y correct
+			if (parts.length != 2) {
+				throw new FormatException("Formato inválido (se esperaban 2 tokens): " + line);
+			}
+
+			String wrong = parts[0].trim();
+			String correct = parts[1].trim();
+
+			// Validar que no sean cadenas vacías después del trim (ej: ",correct" o "wrong,")
+			if (wrong.isEmpty() || correct.isEmpty()) {
+				throw new FormatException("Formato inválido (token vacío): " + line);
+			}
+
+			// Normalizamos la clave a minúsculas para soportar case-insensitivity en la búsqueda.
+			// La corrección ('correct') se guarda tal cual viene (respetando mayúsculas/minúsculas).
+			dictionary.computeIfAbsent(wrong.toLowerCase(), k -> new HashSet<>()).add(correct);
+		}
+	
 	}
 
 	/** Construye el Filereader.
@@ -110,6 +153,17 @@ public class FileCorrector extends Corrector {
 	 * @throws IllegalArgumentException si la entrada no es una palabra válida 
 	 */
 	public Set<String> getCorrections(String wrong) {
-		return null;
+		if (wrong == null) {
+			throw new IllegalArgumentException("La palabra a corregir no puede ser null.");
+		}
+
+		Set<String> corrections = dictionary.get(wrong.toLowerCase());
+
+		if (corrections == null) {
+			return Collections.emptySet();
+		} else {
+			// evita que pueda modificarse el set de correcciones desde afuera.
+			return Collections.unmodifiableSet(corrections);  
+		}
 	}
 }
