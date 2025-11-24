@@ -7,10 +7,13 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.Scanner;
 
 import edu.isistan.spellchecker.corrector.Corrector;
 import edu.isistan.spellchecker.corrector.Dictionary;
+import edu.isistan.spellchecker.tokenizer.TokenScanner;
+import java.util.Iterator;
 
 /**
  * El SpellChecker usa un Dictionary, un Corrector, and I/O para chequear
@@ -71,8 +74,45 @@ public class SpellChecker {
 	 */
 	private String getNextString(Scanner sc) {
 		return sc.next();
+
 	}
 
+
+
+    /**
+     * Short description
+     * 
+     * @return 
+     */
+    public String elegirOpciones(Scanner sc, String token, Set<String> correcciones) {
+        LinkedList<String> options = new LinkedList<>(correcciones);
+        System.out.println("La palabra \"" + token + "\" no se encuentra en el diccionario.");
+        System.out.println("Por favor, ingrese el número correspondiente a la acción deseada:");
+        System.out.println("0: Ignorar y continuar");
+        System.out.println("1: Reemplazar manualmente por otra palabra");
+
+        // Mostrar sugerencias si existen
+        if (!correcciones.isEmpty()) {
+            for (int i = 0; i < options.size(); i++) {
+                // i + 2 porque 0 y 1 ya están ocupados
+                System.out.println((i + 2) + ": Reemplazar por \"" + options.get(i) + "\"");
+            }
+        }
+
+        // Obtener la opción del usuario
+        int opt = getNextInt(0, correcciones.size() + 1, sc);
+
+        if (opt == 0) {
+            return token; 
+        } else if (opt == 1) {
+            System.out.print("Ingrese la corrección manual: "); 
+            return getNextString(sc); 
+
+        } else {
+            return options.get(opt - 2); 
+        }
+
+    }
 
 
 	/**
@@ -90,6 +130,18 @@ public class SpellChecker {
 	public void checkDocument(Reader in, InputStream input, Writer out) throws IOException {
 		Scanner sc = new Scanner(input);
 
-		// STUB
+        Iterator<String> it = new TokenScanner(in);
+
+        while (it.hasNext()) {
+            String token = it.next(); 
+            // dict.isWord: si no es token -> false,  si es token pero no esta en el diccionario -> false
+            if (!dict.isWord(token) && TokenScanner.isWord(token) ) {
+                Set<String> correcciones = corr.getCorrections(token);
+                out.write(elegirOpciones(sc, token, correcciones));
+                continue;
+            } 
+            out.write(token); 
+        }
+        out.flush();
 	}
 }
