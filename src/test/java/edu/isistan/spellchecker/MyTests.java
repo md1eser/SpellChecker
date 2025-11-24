@@ -1,4 +1,7 @@
 package edu.isistan.spellchecker;
+
+
+
 import org.junit.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -10,6 +13,7 @@ import java.util.Set;
 import edu.isistan.spellchecker.corrector.DictionaryTrie;
 import edu.isistan.spellchecker.corrector.impl.FileCorrector;
 import edu.isistan.spellchecker.corrector.Dictionary;
+import edu.isistan.spellchecker.corrector.impl.SwapCorrector;
 import edu.isistan.spellchecker.tokenizer.TokenScanner;
 import java.io.IOException;
 
@@ -208,6 +212,53 @@ public class MyTests {
             assertTrue("Debería contener 'balloon' para: " + variante, resultado.contains("balloon"));
         }
     }
+
+
+    //TESTS de Swap Corrector---------------------------------------------------------------
+
+    //Proveer un diccionario null
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorNullDictionary() {
+        new SwapCorrector(null);
+    }
+      
+    //Pedir correcciones para una palabra que está en el diccionario.
+    @Test
+    public void testPalabraCorrectaNoCambia() throws IOException {
+        String texto = "hello world apple banana";
+        TokenScanner scanner = new TokenScanner(new StringReader(texto));
+        Dictionary dictionary = new Dictionary(scanner);
+
+        SwapCorrector corrector = new SwapCorrector(dictionary);
+
+        // "world" ya es correcta, no debería sugerir nada
+        Set<String> sugerencias = corrector.getCorrections("world");
+        assertNotNull(sugerencias);
+        assertTrue("Palabra correcta no debería generar sugerencias", sugerencias.isEmpty());
+
+        // "apple" también está correcta
+        sugerencias = corrector.getCorrections("apple");
+        assertNotNull(sugerencias);
+        assertTrue("Palabra correcta no debería generar sugerencias", sugerencias.isEmpty());
+    }
+
+
+    
+    //Pedir correcciones para una palabra con distintas capitalizaciones.
+    @Test
+    public void testCorreccionesSwapCaseInsensitive() throws IOException {
+        String texto = "heat hate with who what";
+        TokenScanner scanner = new TokenScanner(new StringReader(texto));
+        Dictionary dictionary = new Dictionary(scanner);
+
+        SwapCorrector corrector = new SwapCorrector(dictionary);
+        Set<String> sugerencias = corrector.getCorrections("HAet"); // swap de "heat" y "hate"
+        assertNotNull(sugerencias);
+        assertTrue("Debería sugerir 'Heat'", sugerencias.contains("Heat"));
+        assertTrue("Debería sugerir 'Hate'", sugerencias.contains("Hate"));
+    }
 }
+
+
 
 

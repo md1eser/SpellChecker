@@ -25,15 +25,22 @@ public class SwapCorrectorTest {
 
 
 	@Test public void testSwapCorrections() throws IOException {
-		Reader reader = new FileReader("smallDictionary.txt");
-		try {
-			Dictionary d = new Dictionary(new TokenScanner(reader));
-			SwapCorrector swap = new SwapCorrector(d);
-			assertEquals("cya -> {cay}", makeSet(new String[]{"cay"}), swap.getCorrections("cya"));
-			assertEquals("oYurs -> {yours}", makeSet(new String[]{"yours"}), swap.getCorrections("oYurs"));
-		} finally {
-			reader.close();
-		}
+        // NOTA: Antes FileReader no funcionaba con Maven (ruta relativa incorrecta). Ahora usamos getResourceAsStream para cargar desde el classpath.
+        InputStream is = getClass().getResourceAsStream("/smallDictionary.txt");
+        if (is == null) {
+            throw new FileNotFoundException("No se encontró smallDictionary.txt en classpath");
+        }
+        Dictionary d = new Dictionary(new TokenScanner(new InputStreamReader(is)));
+
+		//Reader reader = new FileReader("smallDictionary.txt");
+		//try {
+        //Dictionary d = new Dictionary(new TokenScanner(reader));
+        SwapCorrector swap = new SwapCorrector(d);
+        assertEquals("cya -> {cay}", makeSet(new String[]{"cay"}), swap.getCorrections("cya"));
+        assertEquals("oYurs -> {yours}", makeSet(new String[]{"yours"}), swap.getCorrections("oYurs"));
+		//} finally {
+	 	//	reader.close();
+		//}
 	}
 
 }

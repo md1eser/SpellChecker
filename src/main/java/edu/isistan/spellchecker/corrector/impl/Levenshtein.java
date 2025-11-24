@@ -3,6 +3,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import edu.isistan.spellchecker.corrector.Corrector;
+import edu.isistan.spellchecker.tokenizer.TokenScanner;
 import edu.isistan.spellchecker.corrector.Dictionary;
 
 /**
@@ -24,6 +25,7 @@ import edu.isistan.spellchecker.corrector.Dictionary;
  */
 public class Levenshtein extends Corrector {
 
+    private Dictionary dict;
 
 	/**
 	 * Construye un Levenshtein Corrector usando un Dictionary.
@@ -32,7 +34,10 @@ public class Levenshtein extends Corrector {
 	 * @param dict
 	 */
 	public Levenshtein(Dictionary dict) {
-		throw new UnsupportedOperationException(); // STUB
+        if (dict == null) {
+            throw new IllegalArgumentException();
+        }
+		this.dict = dict;
 	}
 
 	/**
@@ -40,7 +45,17 @@ public class Levenshtein extends Corrector {
 	 * @return todas las palabras a erase distance uno
 	 */
 	Set<String> getDeletions(String s) {
-		throw new UnsupportedOperationException(); // STUB
+        Set<String> deletions = new HashSet<>(); 
+        for (int i = 0; i < s.length(); i++) { 
+            // totamos todas las combinaciones de la palabra
+            // eliminando un letra
+            // p.e casa -> asa, csa, caa, cas
+            String comb = s.substring(0, i) + s.substring(i+1); 
+            if (dict.isWord(comb)) {
+                deletions.add(comb);
+            } 
+        } 
+        return deletions;
 	}
 
 	/**
@@ -48,7 +63,25 @@ public class Levenshtein extends Corrector {
 	 * @return todas las palabras a substitution distance uno
 	 */
 	public Set<String> getSubstitutions(String s) {
-		throw new UnsupportedOperationException(); // STUB
+        Set<String> subs = new HashSet<>(); 
+        for (int i = 0; i < s.length(); i++) { 
+            //  para cada posición en i del string, reemplazamos 
+            //  con todos los caracteres (menos el que ya esta)
+            //  si se forma una palabra reemplazando solo una vez
+            // p.e trio -> reemplazo en i=0 por c -> crio
+        
+            for (char c = 'a'; c <= 'z'; c++) {
+                if (c == s.charAt(i)) continue;
+
+                String comb = s.substring(0, i) + c + s.substring(i + 1);
+                if (dict.isWord(comb)) {
+                    subs.add(comb);
+                }
+			}
+
+
+        } 
+        return subs;
 	}
 
 
@@ -57,10 +90,30 @@ public class Levenshtein extends Corrector {
 	 * @return todas las palabras a insert distance uno
 	 */
 	public Set<String> getInsertions(String s) {
-		throw new UnsupportedOperationException(); // STUB
+        Set<String> inserts = new HashSet<>(); 
+        for (int i = 0; i <= s.length(); i++) {  // <= porque sino no se puede inserta en lo último
+            //  para cada posición en i del string, hay que probar
+            //  insertar todos los caracteres y chequear si se forma una palabra 
+            // p.e ata -> inserto en i=0, c=b, bata
+            for (char c = 'a'; c <= 'z'; c++) {
+                String comb = s.substring(0, i) + c + s.substring(i); // substring(i) -> desde i hasta el fin de la cadena
+                if (dict.isWord(comb)) {
+                    inserts.add(comb);
+                }
+			}
+
+        } 
+        return inserts;
 	}
 
-	public Set<String> getCorrections(String wrong) {
-		throw new UnsupportedOperationException(); // STUB
-	}
+    public Set<String> getCorrections(String wrong) {
+        if (!TokenScanner.isWord(wrong))
+            throw new IllegalArgumentException();
+        Set<String> result = new HashSet<>();
+        result.addAll(getDeletions(wrong));
+        result.addAll(getSubstitutions(wrong));
+        result.addAll(getInsertions(wrong));
+        return super.matchCase(wrong, result);
+    }
+
 }

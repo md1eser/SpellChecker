@@ -30,8 +30,16 @@ public class LevenshteinTest {
 
 
 	@Before public void setUp() throws IOException {
-		Dictionary dict = new Dictionary(new TokenScanner(new FileReader("smallDictionary.txt")));
-		corr = new Levenshtein(dict);
+		// Dictionary dict = new Dictionary(new TokenScanner(new FileReader("smallDictionary.txt")));
+		// corr = new Levenshtein(dict);
+        // NOTA: Antes FileReader no funcionaba con Maven (ruta relativa incorrecta). Ahora usamos getResourceAsStream para cargar desde el classpath.
+        InputStream is = getClass().getResourceAsStream("/smallDictionary.txt");
+        if (is == null) {
+            throw new FileNotFoundException("No se encontró smallDictionary.txt en classpath");
+        }
+        Dictionary dict = new Dictionary(new TokenScanner(new InputStreamReader(is)));
+        corr = new Levenshtein(dict);
+
 	}
 
 
