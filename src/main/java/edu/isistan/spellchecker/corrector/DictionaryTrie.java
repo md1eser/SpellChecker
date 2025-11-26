@@ -3,13 +3,15 @@ package edu.isistan.spellchecker.corrector;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.isistan.spellchecker.tokenizer.TokenScanner;
 
 public class DictionaryTrie {
-    // Nodo interno del Trie
+
     private static class NodoTrie {
-        NodoTrie[] hijos = new NodoTrie[27]; // 26 letras + apostrofe
+        Map<Character, NodoTrie> hijos; 
         boolean finPalabra;
     }
     private final NodoTrie root = new NodoTrie();
@@ -37,14 +39,17 @@ public class DictionaryTrie {
     private void insert(String word) {
         NodoTrie nodo = root;
         for (char c : word.toCharArray()) {
-            int index = charToIndex(c);
-            if (index == -1) return; // ignorar caracteres inválidos
-            if (nodo.hijos[index] == null) {
-                nodo.hijos[index] = new NodoTrie();
+            if (!Character.isLetter(c) && c != '\'') continue;
+
+            if (nodo.hijos == null) {
+                nodo.hijos = new HashMap<>(); 
             }
-            nodo = nodo.hijos[index];
+
+            // si 'c' no existe, crea el nodo, lo guarda y lo devuelve. si ya existe, solo lo devuelve.
+            nodo = nodo.hijos.computeIfAbsent(c, k -> new NodoTrie());
         }
-        if (!nodo.finPalabra) { // si es la primera vez que aparece
+        
+        if (!nodo.finPalabra) { 
             nodo.finPalabra = true;
             cantPalabras++;
         }
@@ -60,20 +65,15 @@ public class DictionaryTrie {
 
         NodoTrie nodo = root;
         for (char c : word.toLowerCase().toCharArray()) {
-            int index = charToIndex(c);
-            if (index == -1 || nodo.hijos[index] == null) {
+
+            if (nodo.hijos == null) return false;
+
+            nodo = nodo.hijos.get(c);
+            if (nodo == null) {
                 return false;
             }
-            nodo = nodo.hijos[index];
         }
         return nodo.finPalabra;
-    }
-
-    // Mapear char → índice (0–25 letras, 26 apóstrofe)
-    private int charToIndex(char c) {
-        if (c == '\'') return 26;
-        if (Character.isLetter(c)) return c - 'a';
-        return -1; // carácter inválido
     }
 }
 
