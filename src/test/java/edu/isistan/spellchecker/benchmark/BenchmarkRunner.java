@@ -24,18 +24,16 @@ public class BenchmarkRunner {
     private DictionaryTrie trieDictionary;
 
     // Palabras para probar
-    private static final String WORD_START = "apple";      // Al inicio del archivo
-    private static final String WORD_END = "zebra";        // Al final
-    private static final String WORD_MISS = "zzzzzzzz";    // No existe
+    private static final String WORD_START = "Photostatting";      // Al inicio del archivo
+    private static final String WORD_END = "shaker";        // Al final
+    private static final String WORD_MISS = "zzzzzz";    // No existe
     
 
     @Setup(Level.Trial)
     public void setup() {
         try {
-            // Ajusta esta ruta si es necesario. En VSCode suele ser relativa a la raíz del proyecto.
             String dictionaryPath = "src/main/resources/dictionary.txt";
             
-            // Cargar diccionarios
             hashDictionary = Dictionary.make(dictionaryPath);
             trieDictionary = DictionaryTrie.make(dictionaryPath);
 
@@ -48,8 +46,6 @@ public class BenchmarkRunner {
              throw new RuntimeException(e);
         }
     }
-
-    // --- COMPARACIÓN 1: BÚSQUEDA (EXISTE) ---
 
     @Benchmark
     public boolean hashSet_Contains_Start() {

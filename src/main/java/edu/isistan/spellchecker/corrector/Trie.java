@@ -7,11 +7,11 @@ import java.util.Map;
  * Estructura de datos Trie genérica.
  * Sabe guardar cadenas y permite navegar por sus ramas.
  */
-public class Trie {
+public class Trie {                                    
 
-    private static class Node {
+    private static class Node {                         
         Map<Character, Node> children;
-        boolean isEndOfWord;
+        boolean isEndOfWord;                            
     }
 
     // La raíz de esta instancia (puede ser la raíz global o un sub-nodo)
@@ -60,6 +60,7 @@ public class Trie {
         if (word == null) return false;
         
         Node current = root;
+        
         for (char c : word.toCharArray()) {
             if (current.children == null) return false;
             
