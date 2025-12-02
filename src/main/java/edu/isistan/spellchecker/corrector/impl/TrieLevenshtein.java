@@ -21,7 +21,7 @@ public class TrieLevenshtein extends Corrector {
      * Construye un Levenshtein Corrector usando un DictionaryTrie.
      * @param dict El diccionario que contiene las palabras válidas.
      */
-    public LevenshteinTrie(DictionaryTrie dict) {
+    public TrieLevenshtein(DictionaryTrie dict) {
         if (dict == null) {
             throw new IllegalArgumentException("El DictionaryTrie no puede ser null");
         }
