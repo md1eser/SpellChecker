@@ -29,7 +29,7 @@ public class SwapCorrectorBenchmark {
         }
     }
 
-    @Param({"ay", "pa", "evangelien", "rceam", "americainzation", "atencion", "gemma", "ciivlian", "pollo", "thorw"})
+    @Param({"aa", "pok", "Bakershield", "Basl", "Australoithecus", "cifematic", "Garpot", "citronlla", "Artec", "vior"})
     private String input;
 
 	@Benchmark

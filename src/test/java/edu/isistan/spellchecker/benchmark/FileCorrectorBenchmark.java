@@ -18,7 +18,7 @@ public class FileCorrectorBenchmark {
 		small = FileCorrector.make(dir + "smallMisspellings2.txt");
 	}
 
-	@Param({"adres", "airporta", "algoritm", "cruz", "archivo", "aclimatacion" })
+	@Param({"agre", "appartments", "acheives", "cruz", "altough", "accomadating" })
 	private String input;
 
 	@Benchmark

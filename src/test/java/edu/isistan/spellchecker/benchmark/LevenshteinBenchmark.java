@@ -14,7 +14,7 @@ import edu.isistan.spellchecker.tokenizer.TokenScanner;
 public class LevenshteinBenchmark {
 	private Levenshtein small, big, trie;
 
-    @Param({"teh", "ay", "evangelint", "ream", "americanizatio", "atencion", "gemma", "civilin", "pollo", "theow"})
+    @Param({"aa", "pok", "Bakershield", "Basl", "Australoithecus", "cifematic", "Garpot", "citronlla", "Artec", "vior"})
     private String input;
 
     @Setup(Level.Trial)
